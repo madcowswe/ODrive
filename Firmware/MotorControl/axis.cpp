@@ -274,6 +274,21 @@ bool Axis::run_closed_loop_control_loop() {
     set_step_dir_active(false);
     return check_for_errors();
 }
+bool Axis::run_brushed_voltage_control_loop() {
+    run_control_loop([this](){
+        if (controller_.config_.control_mode >= Controller::CTRL_MODE_POSITION_CONTROL)
+            return error_ |= ERROR_POS_CTRL_DURING_SENSORLESS, false;
+
+        // Note that all estimators are updated in the loop prefix in run_control_loop
+        float current_setpoint;
+        if (!controller_.update(0, 0, &current_setpoint))
+            return error_ |= ERROR_CONTROLLER_FAILED, false;
+        if (!motor_.update(current_setpoint, 0, 0))
+            return false; // set_error should update axis.error_
+        return true;
+    });
+    return check_for_errors();
+}
 
 bool Axis::run_idle_loop() {
     // run_control_loop ignores missed modulation timing updates
@@ -324,6 +339,8 @@ void Axis::run_state_machine_loop() {
                     task_chain_[pos++] = AXIS_STATE_ENCODER_INDEX_SEARCH;
                 task_chain_[pos++] = AXIS_STATE_ENCODER_OFFSET_CALIBRATION;
                 task_chain_[pos++] = AXIS_STATE_IDLE;
+            } else if (requested_state_ == AXIS_STATE_BRUSHED_VOLTAGE_CONTROL) {
+                task_chain_[pos++] = AXIS_STATE_BRUSHED_VOLTAGE_CONTROL;
             } else if (requested_state_ != AXIS_STATE_UNDEFINED) {
                 task_chain_[pos++] = requested_state_;
                 task_chain_[pos++] = AXIS_STATE_IDLE;
@@ -390,6 +407,18 @@ void Axis::run_state_machine_loop() {
                 if (!encoder_.is_ready_)
                     goto invalid_state_label;
                 status = run_closed_loop_control_loop();
+            } break;
+
+            case AXIS_STATE_BRUSHED_CURRENT_CONTROL: {
+              // Not implemented.
+              goto invalid_state_label;
+
+            } break;
+
+            case AXIS_STATE_BRUSHED_VOLTAGE_CONTROL: {
+                if (motor_.config_.direction==0)
+                        goto invalid_state_label;
+                status = run_brushed_voltage_control_loop();
             } break;
 
             case AXIS_STATE_IDLE: {

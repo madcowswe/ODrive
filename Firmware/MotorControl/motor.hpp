@@ -28,7 +28,9 @@ public:
     enum MotorType_t {
         MOTOR_TYPE_HIGH_CURRENT = 0,
         // MOTOR_TYPE_LOW_CURRENT = 1, //Not yet implemented
-        MOTOR_TYPE_GIMBAL = 2
+        MOTOR_TYPE_GIMBAL = 2,
+        MOTOR_TYPE_BRUSHED_CURRENT = 3,
+        MOTOR_TYPE_BRUSHED_VOLTAGE = 4
     };
 
     struct Iph_BC_t {
@@ -121,6 +123,7 @@ public:
     bool run_calibration();
     bool enqueue_modulation_timings(float mod_alpha, float mod_beta);
     bool enqueue_voltage_timings(float v_alpha, float v_beta);
+    bool enqueue_brushed_voltage_timings(float voltage_setpoint);
     bool FOC_voltage(float v_d, float v_q, float pwm_phase);
     bool FOC_current(float Id_des, float Iq_des, float I_phase, float pwm_phase);
     bool update(float current_setpoint, float phase, float phase_vel);

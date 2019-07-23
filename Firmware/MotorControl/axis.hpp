@@ -35,6 +35,8 @@ public:
         AXIS_STATE_CLOSED_LOOP_CONTROL = 8,  //<! run closed loop control
         AXIS_STATE_LOCKIN_SPIN = 9,       //<! run lockin spin
         AXIS_STATE_ENCODER_DIR_FIND = 10,
+        AXIS_STATE_BRUSHED_CURRENT_CONTROL = 11,  //<! Not implemented.
+        AXIS_STATE_BRUSHED_VOLTAGE_CONTROL = 12,  //<! run open loop brushed voltage control
     };
 
     struct LockinConfig_t {
@@ -179,6 +181,7 @@ public:
     bool run_lockin_spin();
     bool run_sensorless_control_loop();
     bool run_closed_loop_control_loop();
+    bool run_brushed_voltage_control_loop();
     bool run_idle_loop();
 
     void run_state_machine_loop();

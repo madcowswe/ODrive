@@ -98,6 +98,9 @@ extern Axis *axes[AXIS_COUNT];
 extern float oscilloscope[OSCILLOSCOPE_SIZE];
 extern size_t oscilloscope_pos;
 
+// TODO: See why this is needed. I saw DRV errors above this sometimes.
+#define BRUSHED_VOLTAGE_MAX_RATIO 0.997f
+
 // TODO: move
 // this is technically not thread-safe but practically it might be
 #define DEFINE_ENUM_FLAG_OPERATORS(ENUMTYPE) \
