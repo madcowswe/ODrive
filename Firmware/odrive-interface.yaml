@@ -924,6 +924,14 @@ valuetypes:
         brief: Run axis homing function.
         doc:
           Endstops must be enabled to use this feature.
+      BrushedCurrentControl:
+        brief: Run brushed motor current loop control.
+        doc:
+          Todo - write docs for this
+      BrushedVoltageControl:
+        brief: Run brushed motor voltage loop control.
+      BrushedPowerControl:
+        brief: Run brushed motor power loop control.
 
   ODrive.ThermistorCurrentLimiter.Error:
     nullflag: None
@@ -1059,3 +1067,6 @@ valuetypes:
       #LowCurrent: # not implemented
       Gimbal: {value: 2}
       Acim:
+      BrushedCurrent:
+      BrushedVoltage:
+      BrushedPower: # not implemented yet (leave placeholder)

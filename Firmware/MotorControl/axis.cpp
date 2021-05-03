@@ -357,6 +357,21 @@ bool Axis::run_closed_loop_control_loop() {
     return check_for_errors();
 }
 
+bool Axis::run_brushed_control_loop() {
+    run_control_loop([this](){
+        if (controller_.config_.control_mode >= Controller::CONTROL_MODE_POSITION_CONTROL)
+            return error_ |= ERROR_POS_CTRL_DURING_SENSORLESS, false;
+
+        // Note that all estimators are updated in the loop prefix in run_control_loop
+        float current_setpoint;
+        if (!controller_.update(&current_setpoint))
+            return error_ |= ERROR_CONTROLLER_FAILED, false;
+        if (!motor_.update(current_setpoint, 0, 0))
+            return false; // set_error should update axis.error_
+        return true;
+    });
+    return check_for_errors();
+}
 
 // Slowly drive in the negative direction at homing_speed until the min endstop is pressed
 // When pressed, set the linear count to the offset (default 0), and then go to position 0
@@ -496,6 +511,10 @@ void Axis::run_state_machine_loop() {
                     task_chain_[pos++] = AXIS_STATE_ENCODER_INDEX_SEARCH;
                 task_chain_[pos++] = AXIS_STATE_ENCODER_OFFSET_CALIBRATION;
                 task_chain_[pos++] = AXIS_STATE_IDLE;
+            } else if (requested_state_ == AXIS_STATE_BRUSHED_VOLTAGE_CONTROL) {
+                task_chain_[pos++] = AXIS_STATE_BRUSHED_VOLTAGE_CONTROL;
+            }  else if (requested_state_ == AXIS_STATE_BRUSHED_CURRENT_CONTROL) {
+                task_chain_[pos++] = AXIS_STATE_BRUSHED_CURRENT_CONTROL;
             } else if (requested_state_ != AXIS_STATE_UNDEFINED) {
                 task_chain_[pos++] = requested_state_;
                 task_chain_[pos++] = AXIS_STATE_IDLE;
@@ -567,6 +586,18 @@ void Axis::run_state_machine_loop() {
                     goto invalid_state_label;
                 watchdog_feed();
                 status = run_closed_loop_control_loop();
+            } break;
+
+            case AXIS_STATE_BRUSHED_CURRENT_CONTROL: {
+                if (motor_.config_.direction==0)
+                        goto invalid_state_label;
+                status = run_brushed_control_loop();
+            } break;
+
+            case AXIS_STATE_BRUSHED_VOLTAGE_CONTROL: {
+                if (motor_.config_.direction==0)
+                        goto invalid_state_label;
+                status = run_brushed_control_loop();
             } break;
 
             case AXIS_STATE_IDLE: {

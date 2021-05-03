@@ -1,0 +1,164 @@
+{
+	"config": {
+		"brake_resistance": 1.0,
+		"enable_uart": true,
+		"enable_i2c_instead_of_can": false,
+		"enable_ascii_protocol_on_usb": true,
+		"dc_bus_undervoltage_trip_level": 8.0,
+		"dc_bus_overvoltage_trip_level": 59.92000198364258
+	},
+	"axis0": {
+		"config": {
+			"startup_motor_calibration": false,
+			"startup_encoder_index_search": false,
+			"startup_encoder_offset_calibration": false,
+			"startup_closed_loop_control": false,
+			"startup_sensorless_control": false,
+			"enable_step_dir": false,
+			"counts_per_step": 2.0,
+			"watchdog_timeout": 0.0,
+			"step_gpio_pin": 1,
+			"dir_gpio_pin": 2
+		},
+		"motor": {
+			"config": {
+				"pre_calibrated": false,
+				"pole_pairs": 7,
+				"calibration_current": 10.0,
+				"resistance_calib_max_voltage": 2.0,
+				"phase_inductance": 0.0,
+				"phase_resistance": 0.0,
+				"direction": 0,
+				"motor_type": 0,
+				"current_lim": 10.0,
+				"inverter_temp_limit_lower": 100.0,
+				"inverter_temp_limit_upper": 120.0,
+				"requested_current_range": 60.0,
+				"current_control_bandwidth": 1000.0
+			}
+		},
+		"controller": {
+			"config": {
+				"control_mode": 3,
+				"pos_gain": 1.0,
+				"vel_gain": 0.0005000000237487257,
+				"vel_integrator_gain": 0.10000000149011612,
+				"vel_limit": 20000.0,
+				"vel_limit_tolerance": 1.2000000476837158,
+				"vel_ramp_rate": 10000.0,
+				"setpoints_in_cpr": false
+			}
+		},
+		"encoder": {
+			"config": {
+				"mode": 0,
+				"use_index": true,
+				"find_idx_on_lockin_only": false,
+				"pre_calibrated": false,
+				"zero_count_on_find_idx": true,
+				"cpr": 2000,
+				"offset": 0,
+				"offset_float": 0.0,
+				"enable_phase_interpolation": true,
+				"bandwidth": 100.0,
+				"calib_range": 0.019999999552965164,
+				"calib_scan_distance": 50.26548385620117,
+				"calib_scan_omega": 12.566370964050293,
+				"idx_search_unidirectional": false,
+				"ignore_illegal_hall_state": false
+			}
+		},
+		"sensorless_estimator": {
+			"config": {
+				"observer_gain": 1000.0,
+				"pll_bandwidth": 1000.0,
+				"pm_flux_linkage": 0.0015800000401213765
+			}
+		},
+		"trap_traj": {
+			"config": {
+				"vel_limit": 20000.0,
+				"accel_limit": 5000.0,
+				"decel_limit": 5000.0,
+				"A_per_css": 0.0
+			}
+		}
+	},
+	"axis1": {
+		"config": {
+			"startup_motor_calibration": false,
+			"startup_encoder_index_search": false,
+			"startup_encoder_offset_calibration": false,
+			"startup_closed_loop_control": false,
+			"startup_sensorless_control": false,
+			"enable_step_dir": false,
+			"counts_per_step": 2.0,
+			"watchdog_timeout": 0.0,
+			"step_gpio_pin": 7,
+			"dir_gpio_pin": 8
+		},
+		"motor": {
+			"config": {
+				"pre_calibrated": true,
+				"pole_pairs": 7,
+				"calibration_current": 10.0,
+				"resistance_calib_max_voltage": 2.0,
+				"phase_inductance": 1.0,
+				"phase_resistance": 2.0,
+				"direction": 1,
+				"motor_type": 4,
+				"current_lim": 30.0,
+				"inverter_temp_limit_lower": 100.0,
+				"inverter_temp_limit_upper": 120.0,
+				"requested_current_range": 60.0,
+				"current_control_bandwidth": 100.0
+			}
+		},
+		"controller": {
+			"config": {
+				"control_mode": 0,
+				"pos_gain": 1.0,
+				"vel_gain": 0.004999999888241291,
+				"vel_integrator_gain": 0.0010000000474974513,
+				"vel_limit": 20000.0,
+				"vel_limit_tolerance": 1.2000000476837158,
+				"vel_ramp_rate": 10000.0,
+				"setpoints_in_cpr": false
+			}
+		},
+		"encoder": {
+			"config": {
+				"mode": 0,
+				"use_index": false,
+				"find_idx_on_lockin_only": false,
+				"pre_calibrated": true,
+				"zero_count_on_find_idx": true,
+				"cpr": 2000,
+				"offset": 0,
+				"offset_float": 0.0,
+				"enable_phase_interpolation": true,
+				"bandwidth": 1000.0,
+				"calib_range": 0.019999999552965164,
+				"calib_scan_distance": 50.26548385620117,
+				"calib_scan_omega": 12.566370964050293,
+				"idx_search_unidirectional": false,
+				"ignore_illegal_hall_state": false
+			}
+		},
+		"sensorless_estimator": {
+			"config": {
+				"observer_gain": 1000.0,
+				"pll_bandwidth": 1000.0,
+				"pm_flux_linkage": 0.0015800000401213765
+			}
+		},
+		"trap_traj": {
+			"config": {
+				"vel_limit": 20000.0,
+				"accel_limit": 5000.0,
+				"decel_limit": 5000.0,
+				"A_per_css": 0.0
+			}
+		}
+	}
+}

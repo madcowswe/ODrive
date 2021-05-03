@@ -19,6 +19,9 @@ AXIS_STATE_CLOSED_LOOP_CONTROL           = 8
 AXIS_STATE_LOCKIN_SPIN                   = 9
 AXIS_STATE_ENCODER_DIR_FIND              = 10
 AXIS_STATE_HOMING                        = 11
+AXIS_STATE_BRUSHED_CURRENT_CONTROL       = 12
+AXIS_STATE_BRUSHED_VOLTAGE_CONTROL       = 13
+AXIS_STATE_BRUSHED_POWER_CONTROL         = 14
 
 # ODrive.ThermistorCurrentLimiter.Error
 THERMISTOR_CURRENT_LIMITER_ERROR_NONE    = 0x00000000
@@ -31,6 +34,7 @@ ENCODER_MODE_SINCOS                      = 2
 ENCODER_MODE_SPI_ABS_CUI                 = 256
 ENCODER_MODE_SPI_ABS_AMS                 = 257
 ENCODER_MODE_SPI_ABS_AEAT                = 258
+ENCODER_MODE_SPI_ABS_RLS                 = 259
 
 # ODrive.Controller.ControlMode
 CONTROL_MODE_VOLTAGE_CONTROL             = 0
@@ -52,6 +56,9 @@ INPUT_MODE_MIRROR                        = 7
 MOTOR_TYPE_HIGH_CURRENT                  = 0
 MOTOR_TYPE_GIMBAL                        = 2
 MOTOR_TYPE_ACIM                          = 3
+MOTOR_TYPE_BRUSHED_CURRENT               = 4
+MOTOR_TYPE_BRUSHED_VOLTAGE               = 5
+MOTOR_TYPE_BRUSHED_POWER                 = 6
 
 # ODrive.Can.Error
 CAN_ERROR_NONE                           = 0x00000000

@@ -101,6 +101,8 @@ public:
     bool run_calibration();
     bool enqueue_modulation_timings(float mod_alpha, float mod_beta);
     bool enqueue_voltage_timings(float v_alpha, float v_beta);
+    bool enqueue_brushed_current_timings(float current_setpoint);
+    bool enqueue_brushed_voltage_timings(float voltage_setpoint);
     bool FOC_voltage(float v_d, float v_q, float pwm_phase);
     bool FOC_current(float Id_des, float Iq_des, float I_phase, float pwm_phase);
     bool update(float current_setpoint, float phase, float phase_vel);

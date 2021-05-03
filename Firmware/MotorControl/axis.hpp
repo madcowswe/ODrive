@@ -184,6 +184,7 @@ public:
     bool run_lockin_spin(const LockinConfig_t &lockin_config);
     bool run_sensorless_control_loop();
     bool run_closed_loop_control_loop();
+    bool run_brushed_control_loop();
     bool run_homing();
     bool run_idle_loop();
 
