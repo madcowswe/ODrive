@@ -191,6 +191,12 @@ interfaces:
     functions:
       test_function: {in: {delta: int32}, out: {cnt: int32}}
       get_oscilloscope_val: {in: {index: uint32}, out: {val: float32}}
+      get_motor_characterize_data_size: {in: {}, out: {val: uint8}} #ERG
+      get_motor_characterize_data_idx: {in: {}, out: {val: uint32}} #ERG
+      get_motor_characterize_data_timestep: {in: {index: uint32}, out: {val: float32}} #ERG
+      get_motor_characterize_data_voltage: {in: {index: uint32}, out: {val: float32}} #ERG
+      get_motor_characterize_data_position: {in: {index: uint32}, out: {val: float32}} #ERG
+      get_motor_characterize_data_velocity: {in: {index: uint32}, out: {val: float32}} #ERG
       get_adc_voltage: {in: {gpio: uint32}, out: {voltage: float32}}
       save_configuration:
       erase_configuration:
@@ -354,6 +360,42 @@ interfaces:
             doc: Both axes will have the same id to start
           can_node_id_extended: bool
           can_heartbeat_rate_ms: uint32
+      input_config: #ERG
+        c_is_class: False
+        attributes:
+          input_type:
+            type: InputType
+            doc: 0 = impulse, 1 = step, 2 = chirp, 3 = noise
+          test_delay:
+            type: float32
+            unit: s
+          test_duration:
+            type: float32
+            unit: s
+          impulse_voltage:
+            type: float32
+            unit: V
+          impulse_peakDuration:
+            type: uint32
+            doc: number of timesteps (8kHz)
+          step_voltage:
+            type: float32
+            unit: V
+          chirp_amplitude:
+            type: float32
+            unit: V
+          chirp_midline:
+            type: float32
+            unit: V
+          chirp_freqLow:
+            type: float32
+            unit: Hz
+          chirp_freqHigh:
+            type: float32
+            unit: Hz
+          noise_max:
+            type: uint32
+            doc: percentage of voltage limit
       fet_thermistor: OnboardThermistorCurrentLimiter
       motor_thermistor: OffboardThermistorCurrentLimiter
       motor: Motor
@@ -924,6 +966,24 @@ valuetypes:
         brief: Run axis homing function.
         doc:
           Endstops must be enabled to use this feature.
+      MotorCharacterizeInput: #ERG
+        brief: Run configured voltage input and record data.
+        doc:
+          Requires
+           motor.config.torque_constant = 1
+           motor.config.motor_type = MOTOR_TYPE_GIMBAL
+           controller.config.control_mode = CONTROL_MODE_TORQUE_CONTROL
+
+  ODrive.Axis.InputType: #ERG
+    values:
+      Impulse:
+        brief: Set voltage output high briefly, then zero
+      Step:
+        brief: Set voltage output constant
+      Chirp:
+        brief: Exponential chirp from freqLow to freqHigh
+      Noise:
+        brief: White noise
 
   ODrive.ThermistorCurrentLimiter.Error:
     nullflag: None

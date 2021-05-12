@@ -5,7 +5,7 @@ import threading
 import fibre
 import odrive
 import odrive.enums
-from odrive.utils import calculate_thermistor_coeffs, set_motor_thermistor_coeffs, start_liveplotter, dump_errors, oscilloscope_dump, BulkCapture, step_and_plot
+from odrive.utils import calculate_thermistor_coeffs, set_motor_thermistor_coeffs, start_liveplotter, dump_errors, oscilloscope_dump, BulkCapture, step_and_plot, run_motor_characterize_input #ERG, added run_motor_characterize_input
 
 def print_banner():
     print("Website: https://odriverobotics.com/")
@@ -88,7 +88,8 @@ def launch_shell(args, logger, app_shutdown_token):
         'BulkCapture': BulkCapture,
         'step_and_plot': step_and_plot,
         'calculate_thermistor_coeffs': calculate_thermistor_coeffs,
-        'set_motor_thermistor_coeffs': set_motor_thermistor_coeffs
+        'set_motor_thermistor_coeffs': set_motor_thermistor_coeffs,
+        'run_motor_characterize_input': run_motor_characterize_input #ERG
     }
 
     # Expose all enums from odrive.enums

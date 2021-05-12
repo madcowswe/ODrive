@@ -276,6 +276,96 @@ def step_and_plot(  axis,
     axis.controller.config.control_mode = initial_control_mode
     capture.plot()
 
+#ERG
+def run_motor_characterize_input(odrv, axs, dir):
+    """
+    Runs configured test input for motor characterization; records time, voltage command, position, and velocity to a *.CSV in the provided directory.
+    Note: must be set to gimbal motor mode and current control. Make sure current_limit is set appropriately,
+    and be aware that this 'current limit' actually signifies the voltage limit when in gimbal motor mode.
+    """
+
+    from odrive.enums import AXIS_STATE_MOTOR_CHARACTERIZE_INPUT
+    from datetime import datetime
+
+    start_time = datetime.now()
+    time_string = start_time.strftime("%m%d%Y_%H%M%S")
+    file_name = dir + '\\motorData' + time_string + '.csv'
+    if not os.path.isdir(dir):
+        print("Error: invalid directory")
+        return
+
+    timeout = 30 # [s]
+    buffer_size = odrv.get_motor_characterize_data_size()
+    vals = []
+
+    with open(file_name, "a+") as file:
+        file.write('%Motor characterization data\n')
+        file.write("%Each row's values were recorded on the same timestep\n")
+        file.write("%Timestep increments at 8kHz\n\n")
+        file.write('%Operator:\n')
+        file.write('%Motor:\n')
+        file.write('%ODrive axis: axis' + str(axs) + '\n')
+        file.write('%Date:,' + start_time.strftime("%d/%m/%Y") + '\n')
+        file.write('%Start time:,' + start_time.strftime("%H:%M:%S") + '\n\n')
+        file.write('%timestep (8Hz),voltage,position,velocity\n')
+        file.write('%[#],[V],[turns],[turns/s]\n')
+        file.flush()
+
+        print("Input starting...")
+        if axs == 0 and odrv.axis0.motor.is_calibrated:
+            odrv.axis0.requested_state = AXIS_STATE_MOTOR_CHARACTERIZE_INPUT
+        elif axs == 1 and odrv.axis1.motor.is_calibrated:
+            odrv.axis1.requested_state = AXIS_STATE_MOTOR_CHARACTERIZE_INPUT
+        else:
+            print("Error: invalid axis. Please choose either 0 or 1, and make sure motor is calibrated.")
+            return
+
+        finished = False
+        finish_counter = 0
+        while not finished:
+            try:            
+                idx = odrv.get_motor_characterize_data_idx()
+                #ERG TODO - figure out why fetching data with idx==0 shifts all the data over a column, remove idx>0 condition
+                #If desired, reducing data collected (e.g. to only timestep and velocity) could get lower latency
+                if idx < buffer_size and idx > 0:
+                    data = [odrv.get_motor_characterize_data_timestep(idx),
+                            odrv.get_motor_characterize_data_voltage(idx),
+                            odrv.get_motor_characterize_data_position(idx),
+                            odrv.get_motor_characterize_data_velocity(idx)]
+                else:
+                    data = [float("NaN"), float("NaN"), float("NaN"), float("NaN")]
+                    finish_counter += 1
+            except Exception as ex:
+                print(str(ex))
+                time.sleep(1)
+                continue
+            
+            #Record latest data (do not write yet, to optimize for speed)
+            vals.append(data)
+            
+            #Check for end conditions (either time recorded is zero, or timeout)
+            if data[0] < 1:
+                finish_counter += 1
+            else:
+                finish_counter = 0
+
+            if finish_counter > 10:
+                finished = True
+
+            elapsed = (datetime.now() - start_time).seconds
+            if elapsed >= timeout:
+                print("Timeout: took more than " + str(timeout) + " seconds")
+                finished = True
+
+            #When finished, write all recorded data
+            if finished:
+                print("Input finished. Recording data...")
+                for line in vals:
+                    str_data = map(str,line)
+                    file.write(",".join(str_data) + ';\n')
+                    file.flush()
+                print("Data saved at: " + file_name)
+    return
 
 def print_drv_regs(name, motor):
     """

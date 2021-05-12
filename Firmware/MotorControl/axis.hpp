@@ -63,6 +63,24 @@ public:
         void set_dir_gpio_pin(uint16_t value) { dir_gpio_pin = value; parent->decode_step_dir_pins(); }
     };
 
+    //ERG - Parameters to be used by run_motor_characterize_input()
+    struct InputConfig_t {
+        InputType input_type = INPUT_TYPE_STEP; //see: InputType_t
+        float test_delay = 2.0f;            // [s]
+        float test_duration = 5.0f;	        // [s]
+        float impulse_voltage = 2.0f;       // [V]
+        uint32_t impulse_peakDuration = 1;  // [#] loopCount cycles, which run at 8kHz
+        float step_voltage = 0.25f;		    // [V]
+        float chirp_amplitude = 0.25f;	    // [V]
+        float chirp_midline = 0.0f;		    // [V]
+        float chirp_freqLow = 1.0f;		    // [Hz]
+        float chirp_freqHigh = 1000.0f;	    // [Hz]
+        uint32_t noise_max = 2;             // [#] percentage of voltage limit
+    };
+
+    void record_motor_characterize_data(float timestep, float voltage_setpoint); //ERG
+    bool run_motor_characterize_input(); //ERG
+
     struct Homing_t {
         bool is_homed = false;
     };
@@ -74,6 +92,7 @@ public:
     Axis(int axis_num,
             const AxisHardwareConfig_t& hw_config,
             Config_t& config,
+            InputConfig_t& input_config, //ERG
             Encoder& encoder,
             SensorlessEstimator& sensorless_estimator,
             Controller& controller,
@@ -196,6 +215,7 @@ public:
     int axis_num_;
     const AxisHardwareConfig_t& hw_config_;
     Config_t& config_;
+    InputConfig_t& input_config_; //ERG 
 
     Encoder& encoder_;
     SensorlessEstimator& sensorless_estimator_;
