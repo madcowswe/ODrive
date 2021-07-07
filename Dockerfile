@@ -22,6 +22,10 @@ CMD \
 	--definitions odrive-interface.yaml \
 	--template ../tools/enums_template.j2 \
 	--output ../tools/odrive/enums.py && \
+	python interface_generator_stub.py \
+	--definitions odrive-interface.yaml \
+	--template ../tools/arduino_enums_template.j2 \
+	--output ../Arduino/ODriveArduino/ODriveEnums.h && \
 	# Hack around Tup's dependency on FUSE
 	tup init && \
 	tup generate build.sh && \

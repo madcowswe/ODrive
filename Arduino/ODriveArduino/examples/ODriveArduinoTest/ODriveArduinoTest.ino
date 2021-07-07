@@ -75,15 +75,15 @@ void loop() {
       int motornum = c-'0';
       int requested_state;
 
-      requested_state = ODriveArduino::AXIS_STATE_MOTOR_CALIBRATION;
+      requested_state = AXIS_STATE_MOTOR_CALIBRATION;
       Serial << "Axis" << c << ": Requesting state " << requested_state << '\n';
       if(!odrive.run_state(motornum, requested_state, true)) return;
 
-      requested_state = ODriveArduino::AXIS_STATE_ENCODER_OFFSET_CALIBRATION;
+      requested_state = AXIS_STATE_ENCODER_OFFSET_CALIBRATION;
       Serial << "Axis" << c << ": Requesting state " << requested_state << '\n';
       if(!odrive.run_state(motornum, requested_state, true, 25.0f)) return;
 
-      requested_state = ODriveArduino::AXIS_STATE_CLOSED_LOOP_CONTROL;
+      requested_state = AXIS_STATE_CLOSED_LOOP_CONTROL;
       Serial << "Axis" << c << ": Requesting state " << requested_state << '\n';
       if(!odrive.run_state(motornum, requested_state, false /*don't wait*/)) return;
     }
@@ -112,8 +112,7 @@ void loop() {
       unsigned long start = millis();
       while(millis() - start < duration) {
         for (int motor = 0; motor < 2; ++motor) {
-          odrive_serial << "r axis" << motor << ".encoder.pos_estimate\n";
-          Serial << odrive.readFloat() << '\t';
+          Serial << odrive.GetPosition(motor) << '\t';
         }
         Serial << '\n';
       }
